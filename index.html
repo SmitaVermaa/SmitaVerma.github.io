@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <!-- Smita Verma — SmitaVerma.github.io -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script>
+  (function() {
+    var saved = localStorage.getItem('theme');
+    var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  })();
+</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smita Verma — Insurance &amp; AI Strategy</title>
@@ -13,11 +20,23 @@
   :root {
     --ink: #0E0E0F;
     --ivory: #F5F0E8;
+    --ink-rgb: 14,14,15;
+    --ivory-rgb: 245,240,232;
     --muted: #9C9688;
     --copper: #C9965A;
     --copper-light: #E8C99A;
-    --rule: rgba(245,240,232,0.12);
-    --card-bg: rgba(245,240,232,0.04);
+    --rule: rgba(var(--ivory-rgb),0.12);
+    --card-bg: rgba(var(--ivory-rgb),0.04);
+  }
+
+  html[data-theme="light"] {
+    --ink: #F5F0E8;
+    --ivory: #17140F;
+    --ink-rgb: 245,240,232;
+    --ivory-rgb: 23,20,15;
+    --muted: #6B6558;
+    --copper: #A9713C;
+    --copper-light: #8B5E34;
   }
 
   html { scroll-behavior: smooth; }
@@ -29,6 +48,7 @@
     font-weight: 300;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   /* NAV */
@@ -36,10 +56,28 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; justify-content: space-between; align-items: center;
     padding: 1.25rem 3rem;
-    background: rgba(14,14,15,0.85);
+    background: rgba(var(--ink-rgb),0.85);
     backdrop-filter: blur(12px);
     border-bottom: 0.5px solid var(--rule);
+    transition: background 0.3s ease, border-color 0.3s ease;
   }
+  .nav-right { display: flex; align-items: center; gap: 2rem; }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    border: 0.5px solid var(--rule);
+    background: none;
+    color: var(--ivory);
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--copper); color: var(--copper); }
   .nav-name {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
@@ -182,7 +220,7 @@
     margin-bottom: 1.5rem;
   }
   .about-headline em { font-style: italic; color: var(--copper-light); }
-  .about-body { font-size: 0.95rem; color: rgba(245,240,232,0.75); margin-bottom: 1rem; }
+  .about-body { font-size: 0.95rem; color: rgba(var(--ivory-rgb),0.75); margin-bottom: 1rem; }
   .about-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -234,7 +272,7 @@
     margin-bottom: 0.75rem;
     font-weight: 400;
   }
-  .work-desc { font-size: 0.875rem; color: rgba(245,240,232,0.7); line-height: 1.7; }
+  .work-desc { font-size: 0.875rem; color: rgba(var(--ivory-rgb),0.7); line-height: 1.7; }
   .work-wins { list-style: none; margin-top: 0.75rem; }
   .work-wins li {
     font-size: 0.825rem;
@@ -271,7 +309,7 @@
     margin-bottom: 1rem;
   }
   .pivot-headline em { font-style: italic; color: var(--copper-light); }
-  .pivot-body { font-size: 0.9rem; color: rgba(245,240,232,0.7); max-width: 680px; margin-bottom: 1.5rem; }
+  .pivot-body { font-size: 0.9rem; color: rgba(var(--ivory-rgb),0.7); max-width: 680px; margin-bottom: 1.5rem; }
   .pivot-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .pivot-tag {
     padding: 0.35rem 0.9rem;
@@ -330,7 +368,7 @@
     padding: 0.4rem 1rem;
     border: 0.5px solid var(--rule);
     font-size: 0.75rem;
-    color: rgba(245,240,232,0.7);
+    color: rgba(var(--ivory-rgb),0.7);
     letter-spacing: 0.04em;
   }
   .cert-pill.active { border-color: var(--copper); color: var(--copper); }
@@ -405,12 +443,17 @@
 
 <nav>
   <a href="#" class="nav-name">Smita Verma</a>
-  <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#beyond">Beyond</a></li>
-    <li><a href="#portfolio">AI Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#beyond">Beyond</a></li>
+      <li><a href="#portfolio">AI Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
+      <span id="theme-icon">☀</span>
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -735,6 +778,30 @@
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+
+  function updateIcon() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    themeIcon.textContent = isLight ? '☾' : '☀';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+    updateIcon();
+  });
+
+  updateIcon();
 </script>
 
 
